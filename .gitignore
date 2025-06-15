@@ -1,0 +1,39 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor folders and files
+.vscode/
+.idea/
+*.swp
+
+# Build/coverage/output folders (if used)
+dist/
+coverage/
+
+# Optional: MongoDB local database dumps
+dump/
+
+# Ignore EJS compiled cache (if ever used)
+*.ejs~
+
+# OneDrive-related sync issues (since you're using OneDrive)
+*.tmp
+~$*
+
+# Ignore database if dumped locally
+*.sqlite
+*.db

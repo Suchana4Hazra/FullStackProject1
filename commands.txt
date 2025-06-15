@@ -1,0 +1,3 @@
+npm init -y //This will create package.json
+npm i express mongoose ejs //download required packages
+
