@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= Listing.title %> | StayTogether</title>
+    <title>
+        <%= Listing.title %> | StayTogether
+    </title>
+    <link rel="stylesheet" href="/css/style.css">
     <!-- <link rel="stylesheet" href="style_showPg.css"> -->
     <style>
         body {
@@ -12,18 +16,21 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 600px;
             margin: 40px auto;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             padding: 32px;
         }
+
         h1 {
             margin-top: 0;
             color: #2c3e50;
         }
+
         .listing-img {
             width: 100%;
             max-height: 320px;
@@ -31,39 +38,115 @@
             border-radius: 6px;
             margin-bottom: 24px;
         }
+
         ul {
             list-style: none;
             padding: 0;
         }
+
         li {
             margin-bottom: 12px;
             font-size: 1.1em;
         }
+
         .label {
             font-weight: bold;
             color: #555;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1><%= Listing.title %></h1>
+        <h1>
+            <%= Listing.title %>
+        </h1>
         <% if (Listing.image && Listing.image.url) { %>
             <img class="listing-img" src="<%= Listing.image.url %>" alt="<%= Listing.title %>">
-        <% } %>
-        <ul>
-            <li><span class="label">Description:</span> <%= Listing.description %></li>
-            <li><span class="label">Price:</span> $<%= Listing.price %></li>
-            <li><span class="label">Location:</span> <%= Listing.location %></li>
-            <li><span class="label">Country:</span> <%= Listing.country %></li>
-        </ul>
-        <a href="/listings/<%= Listing._id%>/edit">Edit Listing</a>
-        <br></br>
-        <form method="POST" action="/listings/<%= Listing._id %>?_method=DELETE">
-           <button type="submit">Delete listing</button>
-        </form>
-        <br></br>
-        <a href="/listings">← Back to Listings</a>
+            <% } %>
+                <ul>
+                    <li><span class="label">Description:</span>
+                        <%= Listing.description %>
+                    </li>
+                    <li><span class="label">Price:</span> $<%= Listing.price %>
+                    </li>
+                    <li><span class="label">Location:</span>
+                        <%= Listing.location %>
+                    </li>
+                    <li><span class="label">Country:</span>
+                        <%= Listing.country %>
+                    </li>
+                </ul>
+                <a href="/listings/<%= Listing._id%>/edit">Edit Listing</a>
+                <br></br>
+                <form method="POST" action="/listings/<%= Listing._id %>?_method=DELETE">
+                    <button type="submit">Delete listing</button>
+                </form>
+                <br></br>
+                <a href="/listings">← Back to Listings</a>
+
+                <!-- Reviews Section -->
+                <hr>
+
+                <div class="reviews-container">
+                    <h2>User Reviews</h2>
+
+                    <% if (Listing.reviews && Listing.reviews.length> 0) { %>
+                        <ul>
+                            <% Listing.reviews.forEach(function(review) { %>
+                                <li class="review-item">
+                                    <div class="review-header">
+                                        <div>
+                                            <span class="review-author">
+                                                <%= review.author || "Anonymous" %>
+                                            </span>
+                                            <span class="review-meta">
+                                                •
+                                                <% for (let i=0; i < review.rating; i++) { %>
+                                                    <span class="review-stars">&#9733;</span>
+                                                    <% } %>
+                                                        <%= review.rating %>/5
+                                            </span>
+                                        </div>
+                                        <div class="review-meta">
+                                            <%= review.formattedDate %>
+                                        </div>
+                                    </div>
+                                    <p class="review-comment">"<%= review.comment %>"</p>
+
+                                    <!-- Delete Button -->
+                                    <form class="review-delete-form" method="POST"
+                                        action="/listings/<%= Listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                        <button type="submit">Delete</button>
+                                    </form>
+                                </li>
+                                <% }); %>
+                        </ul>
+                        <% } else { %>
+                            <p>No reviews yet. Be the first to review!</p>
+                            <% } %>
+                </div>
+
+                <hr>
+                <h3>Add a Review</h3>
+                <form method="POST" action="/listings/<%= Listing._id %>/reviews" class="review-form">
+                    <label for="author">Your Name:</label><br>
+                    <input type="text" id="author" name="review[author]" required><br>
+
+                    <label for="comment">Comment:</label><br>
+                    <textarea id="comment" name="review[comment]" rows="3" required></textarea><br>
+
+                    <label>Rating:</label><br>
+                    <div class="star-rating">
+                        <% for (let i=5; i>= 1; i--) { %>
+                            <input type="radio" id="star<%= i %>" name="review[rating]" value="<%= i %>" required>
+                            <label for="star<%= i %>">&#9733;</label>
+                            <% } %>
+                    </div>
+
+                    <button type="submit">Submit Review</button>
+                </form>
     </div>
 </body>
+
 </html>

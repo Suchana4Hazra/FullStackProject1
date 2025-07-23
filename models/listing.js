@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
-
+const review = require("./review.js")
 //create a schema
 const listingSchema = new schema({
     title: {
@@ -33,7 +33,20 @@ const listingSchema = new schema({
     },
     country: {
         type: String
-    }
+    },
+    reviews: [
+        {
+            type: schema.Types.ObjectId,
+            ref: "Review",
+        },
+    ]
+})
+
+//Delete middleware for Reviews
+listingSchema.post("findOneAndDelete", async(listing) => {
+  if(listing) {
+    await review.deleteMany({_id: {$in: listing.reviews}});
+  }
 })
 
 //create a model(collection)

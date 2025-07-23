@@ -1,89 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Listings</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f5f7;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: white;
-            padding: 32px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1 {
-            margin-top: 0;
-            font-size: 2em;
-        }
-        p {
-            font-size: 1.1em;
-            color: #555;
-        }
-        button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.2s ease-in-out;
-        }
-        button:hover {
-            background-color: #1f6691;
-        }
-        ul {
-            padding-left: 0;
-            list-style-type: none;
-        }
-        li {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-        a {
-            color: #2c3e50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .btn-container {
-            margin-bottom: 24px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>StayTogether</h1>
-        <p>Your place to find perfect listings</p>
-    </header>
-
+<!-- Hero Section -->
+<section class="hero-section">
     <div class="container">
-        <div class="btn-container">
-            <form method="GET" action="/listings/new">
-                <button type="submit">+ Create New Listing</button>
-            </form>
-        </div>
-
-        <ul>
-            <% for (let listing of allListing) { %>
-                <li><a href="/listings/<%= listing._id %>"><%= listing.title %></a></li>
-            <% } %>
-        </ul>
+        <h1 class="fade-in"><i class="fas fa-map-marker-alt me-3"></i>Discover Amazing Stays</h1>
+        <p class="fade-in">Find your perfect home away from home with StayTogether</p>
+        <a href="/listings/new" class="btn btn-success btn-lg fade-in">
+            <i class="fas fa-plus me-2"></i>Add Your Listing
+        </a>
     </div>
-</body>
-</html>
+</section>
+
+<!-- Main Listings Section -->
+<div class="container main-container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-home me-2 text-primary"></i>
+                All Listings 
+                <span class="badge bg-primary"><%= allListing.length %></span>
+            </h2>
+        </div>
+    </div>
+
+    <!-- Listings Grid -->
+    <div class="row g-4">
+        <% if (allListing && allListing.length > 0) { %>
+            <% for (let listing of allListing) { %>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card listing-card fade-in">
+                        <% if (listing.image && listing.image.url) { %>
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                        <% } else { %>
+                            <img src="https://via.placeholder.com/400x200/3498db/ffffff?text=No+Image" 
+                                 class="card-img-top" alt="No image available">
+                        <% } %>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                <i class="fas fa-bed me-2 text-muted"></i>
+                                <%= listing.title %>
+                            </h5>
+                            <p class="card-text flex-grow-1">
+                                <%= listing.description ? 
+                                    (listing.description.length > 80 ? 
+                                     listing.description.substring(0, 80) + '...' : 
+                                     listing.description) : 
+                                    'No description available.' %>
+                            </p>
+                            
+                            <% if (listing.price) { %>
+                                <p class="card-text">
+                                    <strong class="text-success">
+                                        <i class="fas fa-rupee-sign"></i> <%= listing.price %>/night
+                                    </strong>
+                                </p>
+                            <% } %>
+                            
+                            <% if (listing.location) { %>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <%= listing.location %>
+                                </p>
+                            <% } %>
+                            
+                            <div class="mt-auto">
+                                <a href="/listings/<%= listing._id %>" class="btn btn-primary w-100">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No listings found</h3>
+                    <p class="text-muted">Be the first to add a listing!</p>
+                    <a href="/listings/new" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Add First Listing
+                    </a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
