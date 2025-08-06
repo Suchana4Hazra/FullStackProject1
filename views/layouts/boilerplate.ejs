@@ -14,52 +14,6 @@
 </head>
 
 <body>
-    <!-- Global Navigation Bar
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">
-                <i class="fas fa-home me-2"></i>
-                StayTogether
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/listings">
-                            <i class="fas fa-list me-1"></i>All Listings
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/listings/new">
-                            <i class="fas fa-plus me-1"></i>Add Listing
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/about">
-                            <i class="fas fa-info-circle me-1"></i>About
-                        </a>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">
-                            <i class="fas fa-sign-in-alt me-1"></i>Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">
-                            <i class="fas fa-user-plus me-1"></i>Sign Up
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
     <!-- Enhanced Global Navigation Bar -->
     <nav class="navbar navbar-expand-lg sticky-top enhanced-navbar">
         <div class="container">
@@ -131,7 +85,6 @@
                     </li>
                 </ul>
 
-                <!-- Search Bar -->
                 <div class="navbar-search d-none d-lg-flex">
                     <form class="search-form">
                         <div class="search-container">
@@ -143,27 +96,45 @@
                     </form>
                 </div>
 
-                <!-- User Authentication Links -->
-                <ul class="navbar-nav nav-auth">
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-auth login-btn" href="/login">
-                            <div class="auth-icon-wrapper">
-                                <i class="fas fa-sign-in-alt"></i>
-                            </div>
-                            <span>Login</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-link-auth signup-btn" href="/signup">
-                            <div class="auth-icon-wrapper">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <span>Sign Up</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                <!-- Authentication Section -->
+                <% if(!currUser) { %>
+                    <!-- User Authentication Links for NON-LOGGED IN users -->
+                    <ul class="navbar-nav nav-auth">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-auth login-btn" href="/login">
+                                <div class="auth-icon-wrapper">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                </div>
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-auth signup-btn" href="/signup">
+                                <div class="auth-icon-wrapper">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <span>Sign Up</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <% } %>
+
+                        <% if(currUser) { %>
+                            <!-- User Authentication Links for LOGGED IN users -->
+                            <ul class="navbar-nav nav-auth">
+                                <li class="nav-item">
+                                    <a class="nav-link nav-link-auth logout-btn" href="/logout">
+                                        <div class="auth-icon-wrapper">
+                                            <i class="fas fa-sign-out-alt"></i>
+                                        </div>
+                                        <span>Logout</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <% } %>
+
+            </div> <!-- This closes navbar-collapse -->
+        </div> <!-- This closes container -->
 
         <!-- Navbar Background Elements -->
         <div class="navbar-bg-decoration">
@@ -172,31 +143,11 @@
             <div class="bg-circle circle-3"></div>
         </div>
     </nav>
-
     <!-- Main Content Area -->
     <main>
-        <%- body %>
+        <%- include("../includes/flash") %>
+            <%- body %>
     </main>
-
-    <!-- Footer -->
-    <!-- <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-home me-2"></i>StayTogether</h5>
-                    <p class="mb-0">Your perfect travel companion for finding amazing stays.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="social-links">
-                        <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
-                    </div>
-                    <p class="mb-0 mt-2">&copy; 2025 StayTogether. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </footer> -->
 
     <!-- Enhanced Footer -->
     <footer class="footer-section">
