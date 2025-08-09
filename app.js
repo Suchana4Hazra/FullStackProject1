@@ -73,10 +73,10 @@ app.listen(PORT, () => {
     console.log('Server is running on port 3000');
 });
 
-app.get("/", (req, res) => {
-    console.log("root");
-    res.send("Welcome to StayTogether!");
-})
+// app.get("/", (req, res) => {
+//     console.log("root");
+//     res.send("Welcome to StayTogether!");
+// })
 app.use('/listings',ListingRouter);
 app.use('/listings',ReviewRouter);
 app.use('/',UserRouter);
