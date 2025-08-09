@@ -54,7 +54,7 @@
                 <div class="card shadow-lg">
                     <div class="card-body p-4">
                         <h2 class="mb-4 text-center text-success">Create a New Listing</h2>
-                        <form id="listingForm" class="needs-validation" novalidate action="/listings" method="POST">
+                        <form id="listingForm" class="needs-validation" novalidate action="/listings" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" id="title" name="listing[title]" class="form-control" required />
@@ -76,8 +76,8 @@
                                 <div class="invalid-feedback">Please specify the country.</div>
                             </div>
                             <div class="mb-3">
-                                <label for="imageUrl" class="form-label">Image URL</label>
-                                <input type="url" id="imageUrl" name="listing[image][url]" class="form-control" />
+                                <label for="imageUrl" class="form-label">Upload Listing Image</label>
+                                <input type="file" id="imageUrl" name="listing[image][url]" class="form-control" />
                                 <div class="invalid-feedback">Enter a valid URL.</div>
                             </div>
                             <div class="mb-3">

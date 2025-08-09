@@ -12,6 +12,11 @@ const localStrategy = require("passport-local")
 const User = require("./models/user.js")
 const flash = require('connect-flash')
 
+if(process.env.NODE_ENV != "production") {
+   require("dotenv").config();
+}
+console.log(process.env.SESSION_SECRET)
+
 const ListingRouter = require('./routes/listing.js')
 const ReviewRouter = require('./routes/reviews.js')
 const UserRouter = require("./routes/user.js")

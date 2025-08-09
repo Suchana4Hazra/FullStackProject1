@@ -45,7 +45,7 @@
                 <div class="card shadow-lg">
                     <div class="card-body p-4">
                         <h2 class="mb-4 text-center text-success">Edit Listing</h2>
-                        <form action="/listings/<%= Listing._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+                        <form action="/listings/<%= Listing._id %>?_method=PUT" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" id="title" name="listing[title]" class="form-control" 
@@ -75,11 +75,11 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="imageUrl" class="form-label">Image URL</label>
-                                <input type="url" id="imageUrl" name="listing[image][url]" class="form-control" 
-                                       value="<%= Listing.image?.url || '' %>" />
+                                <label for="imageUrl" class="form-label">Upload Listing Image</label>
+                                <input type="file" id="imageUrl" name="listing[image][url]" class="form-control" />
                                 <div class="invalid-feedback">Enter a valid URL.</div>
                             </div>
+
 
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>

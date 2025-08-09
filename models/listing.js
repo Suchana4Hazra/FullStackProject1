@@ -40,17 +40,28 @@ const listingSchema = new schema({
             ref: "Review",
         },
     ],
-    owner:  {
+    owner: {
         type: schema.Types.ObjectId,
         ref: "User",
     },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            index: '2dsphere'
+        }
+    }
 })
 
 //Delete middleware for Reviews
-listingSchema.post("findOneAndDelete", async(listing) => {
-  if(listing) {
-    await review.deleteMany({_id: {$in: listing.reviews}});
-  }
+listingSchema.post("findOneAndDelete", async (listing) => {
+    if (listing) {
+        await review.deleteMany({ _id: { $in: listing.reviews } });
+    }
 })
 
 //create a model(collection)
