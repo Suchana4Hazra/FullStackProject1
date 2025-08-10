@@ -35,6 +35,7 @@ body {
     transform: translateY(-1px);
 }
 
+
 /* Hero Section */
 .hero-section {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));

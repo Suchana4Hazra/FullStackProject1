@@ -69,6 +69,7 @@ router
                 price: req.body.listing.price,
                 location: req.body.listing.location,
                 country: req.body.listing.country,
+                category: req.body.listing.category,
                 image: {
                     filename: filename,
                     url: imageUrl
@@ -161,6 +162,7 @@ router
                 price: req.body.listing.price,
                 location: req.body.listing.location,
                 country: req.body.listing.country,
+                category: req.body.listing.category,
                 image: {
                     filename: filename,
                     url: imageUrl

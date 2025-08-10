@@ -54,7 +54,12 @@ const listingSchema = new schema({
             type: [Number], // [longitude, latitude]
             index: '2dsphere'
         }
-    }
+    },
+    category: {
+    type: String,
+    enum: ['apartment', 'house', 'villa', 'hotel', 'resort', 'cabin', 'penthouse', 'studio', 'beachfront', 'mountain', 'countryside'],
+    required: true
+}
 })
 
 //Delete middleware for Reviews
