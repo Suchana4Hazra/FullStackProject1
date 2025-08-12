@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 const path = require("path");
 const methodOverride = require("method-override")
 const ejsMate = require('ejs-mate');
-const expressLayouts = require('express-ejs-layouts');
+const expressLayouts = require('express-ejs-layouts')
 const session = require("express-session")
+const MongoStore = require('connect-mongo')
 const svgCaptcha = require('svg-captcha')
 const passport = require("passport")
 const localStrategy = require("passport-local")
@@ -21,6 +22,8 @@ const ListingRouter = require('./routes/listing.js')
 const ReviewRouter = require('./routes/reviews.js')
 const UserRouter = require("./routes/user.js")
 
+const dburl = process.env.ATLASDB_URL;
+
 
 const PORT = 3000;
 
@@ -33,7 +36,19 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/boilerplate');
 app.engine('ejs',ejsMate);
 
+const store = MongoStore.create({
+    mongoUrl: dburl,
+    crypto: {
+        secret: 'mysupersecretcode'
+    },
+    touchAfter: 24*3600,
+})
+
+store.on("error",() => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+})
 const sessionOptions = {
+    store: store, //session related information will be stored in mongodb atlas
     secret : 'mysupersecretcode',
     resave : false,
     saveUninitialized : true,
@@ -95,6 +110,6 @@ connectToDatabase().then(() => {
 
 // Connect to MongoDB
 async function connectToDatabase() {
-    await mongoose.connect('mongodb://localhost:27017/StayTogether');
+    await mongoose.connect(dburl);
 }
 
