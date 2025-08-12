@@ -1,89 +1,425 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Listings</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f5f7;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 700px;
-            margin: 40px auto;
-            background: white;
-            padding: 32px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1 {
-            margin-top: 0;
-            font-size: 2em;
-        }
-        p {
-            font-size: 1.1em;
-            color: #555;
-        }
-        button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background 0.2s ease-in-out;
-        }
-        button:hover {
-            background-color: #1f6691;
-        }
-        ul {
-            padding-left: 0;
-            list-style-type: none;
-        }
-        li {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-        a {
-            color: #2c3e50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .btn-container {
-            margin-bottom: 24px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>StayTogether</h1>
-        <p>Your place to find perfect listings</p>
-    </header>
-
+<!-- Hero Section -->
+<section class="hero-section">
     <div class="container">
-        <div class="btn-container">
-            <form method="GET" action="/listings/new">
-                <button type="submit">+ Create New Listing</button>
-            </form>
-        </div>
-
-        <ul>
-            <% for (let listing of allListing) { %>
-                <li><a href="/listings/<%= listing._id %>"><%= listing.title %></a></li>
-            <% } %>
-        </ul>
+        <h1 class="fade-in"><i class="fas fa-map-marker-alt me-3"></i>Discover Amazing Stays</h1>
+        <p class="fade-in">Find your perfect home away from home with StayTogether</p>
+        <a href="/listings/new" class="btn btn-success btn-lg fade-in">
+            <i class="fas fa-plus me-2"></i>Add Your Listing
+        </a>
     </div>
-</body>
-</html>
+</section>
+
+<!-- Main Listings Section -->
+<div class="container main-container">
+    <!-- Category Filter Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="category-bar">
+                <div class="category-scroll-container">
+                    <div class="category-items d-flex">
+                        <div class="category-item active" data-category="all">
+                            <i class="fas fa-th-large"></i>
+                            <span>All</span>
+                        </div>
+                        <div class="category-item" data-category="apartment">
+                            <i class="fas fa-building"></i>
+                            <span>Apartments</span>
+                        </div>
+                        <div class="category-item" data-category="house">
+                            <i class="fas fa-home"></i>
+                            <span>Houses</span>
+                        </div>
+                        <div class="category-item" data-category="villa">
+                            <i class="fas fa-archway"></i>
+                            <span>Villas</span>
+                        </div>
+                        <div class="category-item" data-category="hotel">
+                            <i class="fas fa-hotel"></i>
+                            <span>Hotels</span>
+                        </div>
+                        <div class="category-item" data-category="resort">
+                            <i class="fas fa-umbrella-beach"></i>
+                            <span>Resorts</span>
+                        </div>
+                        <div class="category-item" data-category="cabin">
+                            <i class="fas fa-tree"></i>
+                            <span>Cabins</span>
+                        </div>
+                        <div class="category-item" data-category="penthouse">
+                            <i class="fas fa-city"></i>
+                            <span>Penthouses</span>
+                        </div>
+                        <div class="category-item" data-category="studio">
+                            <i class="fas fa-door-open"></i>
+                            <span>Studios</span>
+                        </div>
+                        <div class="category-item" data-category="beachfront">
+                            <i class="fas fa-water"></i>
+                            <span>Beachfront</span>
+                        </div>
+                        <div class="category-item" data-category="mountain">
+                            <i class="fas fa-mountain"></i>
+                            <span>Mountain</span>
+                        </div>
+                        <div class="category-item" data-category="countryside">
+                            <i class="fas fa-leaf"></i>
+                            <span>Countryside</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Toggle Button -->
+                <button class="btn btn-outline-secondary filter-btn" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
+                    <i class="fas fa-filter me-2"></i>Filters
+                </button>
+            </div>
+            
+            <!-- Additional Filters (Collapsible) -->
+            <div class="collapse mt-3" id="filterCollapse">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="priceRange" class="form-label">Price Range</label>
+                            <select class="form-select" id="priceRange">
+                                <option value="">Any Price</option>
+                                <option value="0-2000">₹0 - ₹2000</option>
+                                <option value="2000-5000">₹2000 - ₹5000</option>
+                                <option value="5000-10000">₹5000 - ₹10000</option>
+                                <option value="10000+">₹10000+</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="locationFilter" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="locationFilter" placeholder="Enter location">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Amenities</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="wifi">
+                                <label class="form-check-label" for="wifi">WiFi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="parking">
+                                <label class="form-check-label" for="parking">Parking</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button class="btn btn-primary me-2" onclick="applyFilters()">Apply</button>
+                            <button class="btn btn-outline-secondary" onclick="clearFilters()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-home me-2 text-primary"></i>
+                <span id="listings-title">All Listings</span>
+                <span class="badge bg-primary" id="listings-count"><%= allListing.length %></span>
+            </h2>
+        </div>
+    </div>
+
+    <!-- Listings Grid -->
+    <div class="row g-4" id="listings-container">
+        <% if (allListing && allListing.length > 0) { %>
+            <% for (let listing of allListing) { %>
+                <div class="col-lg-4 col-md-6 col-sm-12 listing-item" 
+                     data-category="<%= listing.category || 'other' %>" 
+                     data-price="<%= listing.price || 0 %>"
+                     data-location="<%= (listing.location || '').toLowerCase() %>">
+                    <div class="card listing-card fade-in">
+                        <% if (listing.image && listing.image.url) { %>
+                            <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.title %>">
+                        <% } else { %>
+                            <img src="https://via.placeholder.com/400x200/3498db/ffffff?text=No+Image" 
+                                 class="card-img-top" alt="No image available">
+                        <% } %>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                <i class="fas fa-bed me-2 text-muted"></i>
+                                <%= listing.title %>
+                            </h5>
+                            <p class="card-text flex-grow-1">
+                                <%= listing.description ? 
+                                    (listing.description.length > 80 ? 
+                                     listing.description.substring(0, 80) + '...' : 
+                                     listing.description) : 
+                                    'No description available.' %>
+                            </p>
+                            
+                            <% if (listing.category) { %>
+                                <span class="badge bg-light text-dark mb-2">
+                                    <%= listing.category.charAt(0).toUpperCase() + listing.category.slice(1) %>
+                                </span>
+                            <% } %>
+                            
+                            <% if (listing.price) { %>
+                                <p class="card-text">
+                                    <strong class="text-success">
+                                        <i class="fas fa-rupee-sign"></i> <%= listing.price %>/night
+                                    </strong>
+                                </p>
+                            <% } %>
+                            
+                            <% if (listing.location) { %>
+                                <p class="card-text text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <%= listing.location %>
+                                </p>
+                            <% } %>
+                            
+                            <div class="mt-auto">
+                                <a href="/listings/<%= listing._id %>" class="btn btn-primary w-100">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-home fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No listings found</h3>
+                    <p class="text-muted">Be the first to add a listing!</p>
+                    <a href="/listings/new" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Add First Listing
+                    </a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+.category-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.category-scroll-container {
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.category-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.category-items {
+    gap: 8px;
+    white-space: nowrap;
+    padding-bottom: 5px;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 20px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    text-decoration: none;
+    color: #666;
+    background: #f8f9fa;
+}
+
+.category-item:hover {
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,123,255,0.15);
+    color: #007bff;
+}
+
+.category-item.active {
+    border-color: #007bff;
+    background: #007bff;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+}
+
+.category-item i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.category-item span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.filter-btn {
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.listing-item {
+    transition: all 0.3s ease;
+}
+
+.listing-item.hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .category-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .category-item {
+        min-width: 70px;
+        padding: 12px 16px;
+    }
+    
+    .category-item i {
+        font-size: 1.2rem;
+    }
+    
+    .category-item span {
+        font-size: 0.75rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryItems = document.querySelectorAll('.category-item');
+    const listingItems = document.querySelectorAll('.listing-item');
+    const listingsTitle = document.getElementById('listings-title');
+    const listingsCount = document.getElementById('listings-count');
+
+    // Category filtering
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const selectedCategory = this.dataset.category;
+            
+            // Update active state
+            categoryItems.forEach(cat => cat.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter listings
+            filterListings(selectedCategory);
+            
+            // Update title
+            const categoryName = selectedCategory === 'all' ? 'All Listings' : 
+                               this.querySelector('span').textContent;
+            listingsTitle.textContent = categoryName;
+        });
+    });
+
+    function filterListings(category) {
+        let visibleCount = 0;
+        
+        listingItems.forEach(item => {
+            const itemCategory = item.dataset.category;
+            
+            if (category === 'all' || itemCategory === category) {
+                item.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+        
+        // Update count
+        listingsCount.textContent = visibleCount;
+        
+        // Show no results message if needed
+        showNoResults(visibleCount === 0);
+    }
+
+    function showNoResults(show) {
+        let noResultsDiv = document.getElementById('no-results');
+        
+        if (show && !noResultsDiv) {
+            noResultsDiv = document.createElement('div');
+            noResultsDiv.id = 'no-results';
+            noResultsDiv.className = 'col-12';
+            noResultsDiv.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                    <h3 class="text-muted">No listings found</h3>
+                    <p class="text-muted">Try selecting a different category or adjusting your filters.</p>
+                </div>
+            `;
+            document.getElementById('listings-container').appendChild(noResultsDiv);
+        } else if (!show && noResultsDiv) {
+            noResultsDiv.remove();
+        }
+    }
+});
+
+// Additional filter functions
+function applyFilters() {
+    const priceRange = document.getElementById('priceRange').value;
+    const location = document.getElementById('locationFilter').value.toLowerCase();
+    const selectedCategory = document.querySelector('.category-item.active').dataset.category;
+    
+    let visibleCount = 0;
+    
+    listingItems.forEach(item => {
+        let showItem = true;
+        
+        // Category filter
+        if (selectedCategory !== 'all' && item.dataset.category !== selectedCategory) {
+            showItem = false;
+        }
+        
+        // Price filter
+        if (priceRange && showItem) {
+            const itemPrice = parseInt(item.dataset.price);
+            if (priceRange === '0-2000' && itemPrice > 2000) showItem = false;
+            else if (priceRange === '2000-5000' && (itemPrice <= 2000 || itemPrice > 5000)) showItem = false;
+            else if (priceRange === '5000-10000' && (itemPrice <= 5000 || itemPrice > 10000)) showItem = false;
+            else if (priceRange === '10000+' && itemPrice <= 10000) showItem = false;
+        }
+        
+        // Location filter
+        if (location && showItem) {
+            const itemLocation = item.dataset.location;
+            if (!itemLocation.includes(location)) showItem = false;
+        }
+        
+        if (showItem) {
+            item.classList.remove('hidden');
+            visibleCount++;
+        } else {
+            item.classList.add('hidden');
+        }
+    });
+    
+    document.getElementById('listings-count').textContent = visibleCount;
+    showNoResults(visibleCount === 0);
+}
+
+function clearFilters() {
+    document.getElementById('priceRange').value = '';
+    document.getElementById('locationFilter').value = '';
+    document.querySelectorAll('.form-check-input').forEach(input => input.checked = false);
+    
+    // Reset to current category
+    const selectedCategory = document.querySelector('.category-item.active').dataset.category;
+    filterListings(selectedCategory);
+}
+</script>

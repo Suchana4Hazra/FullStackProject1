@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
-
+const review = require("./review.js")
 //create a schema
 const listingSchema = new schema({
     title: {
@@ -33,6 +33,39 @@ const listingSchema = new schema({
     },
     country: {
         type: String
+    },
+    reviews: [
+        {
+            type: schema.Types.ObjectId,
+            ref: "Review",
+        },
+    ],
+    owner: {
+        type: schema.Types.ObjectId,
+        ref: "User",
+    },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            index: '2dsphere'
+        }
+    },
+    category: {
+    type: String,
+    enum: ['apartment', 'house', 'villa', 'hotel', 'resort', 'cabin', 'penthouse', 'studio', 'beachfront', 'mountain', 'countryside'],
+    required: true
+}
+})
+
+//Delete middleware for Reviews
+listingSchema.post("findOneAndDelete", async (listing) => {
+    if (listing) {
+        await review.deleteMany({ _id: { $in: listing.reviews } });
     }
 })
 

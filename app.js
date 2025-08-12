@@ -1,107 +1,106 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const listing = require("./models/listing.js")
 const path = require("path");
 const methodOverride = require("method-override")
+const ejsMate = require('ejs-mate');
+const expressLayouts = require('express-ejs-layouts')
+const session = require("express-session")
+const MongoStore = require('connect-mongo')
+const svgCaptcha = require('svg-captcha')
+const passport = require("passport")
+const localStrategy = require("passport-local")
+const User = require("./models/user.js")
+const flash = require('connect-flash')
+
+if(process.env.NODE_ENV != "production") {
+   require("dotenv").config();
+}
+console.log(process.env.SESSION_SECRET)
+
+const ListingRouter = require('./routes/listing.js')
+const ReviewRouter = require('./routes/reviews.js')
+const UserRouter = require("./routes/user.js")
+
+const dburl = process.env.ATLASDB_URL;
+
 
 const PORT = 3000;
 
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '/public')));
 app.use(methodOverride("_method"))
+app.use(expressLayouts);
+app.set('layout', 'layouts/boilerplate');
+app.engine('ejs',ejsMate);
+
+const store = MongoStore.create({
+    mongoUrl: dburl,
+    crypto: {
+        secret: process.env.SECRET
+    },
+    touchAfter: 24*3600,
+})
+
+store.on("error",() => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+})
+const sessionOptions = {
+    store: store, //session related information will be stored in mongodb atlas
+    secret : process.env.SECRET,
+    resave : false,
+    saveUninitialized : true,
+    cookie: {
+        expires: Date.now()+7*24*60*60*1000,
+        maxAge: 7*24*60*60*1000,
+        httpOnly: true,
+    },
+};
+
+app.use(session(sessionOptions));
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use((req,res,next) => {
+    res.locals.success = req.flash("success")
+    res.locals.error = req.flash("error");
+    res.locals.currUser = req.user;
+    next();
+})
+
+
+app.get('/captcha', (req, res) => {
+    const captcha = svgCaptcha.create();
+    req.session.captcha = captcha.text;
+    res.type('svg');
+    res.status(200).send(captcha.data);
+});
+
 
 app.listen(PORT, () => {
     console.log('Server is running on port 3000');
 });
 
-app.get("/", (req, res) => {
-    console.log("root");
-    res.send("Welcome to StayTogether!");
-})
-
-//Index Route
-app.get('/listings', async (req, res) => {
-    console.log("list")
-    const allListing = await listing.find({});
-    res.render("./listings/index.ejs", { allListing });
-})
-
-//new route
-app.get('/listings/new', (req, res) => {
-    console.log("new listing");
-    res.render('./listings/new.ejs');
-})
-
-// //Edit route
-// app.get("listings/:id/edit", async (req, res) => {
-//     let { id } = req.params;
-//     console.log("edit api")
-//     const Listing = await listing.findById(id);
-//     res.render("./listings/edit.ejs", { Listing });
+// app.get("/", (req, res) => {
+//     console.log("root");
+//     res.send("Welcome to StayTogether!");
 // })
+app.use('/listings',ListingRouter);
+app.use('/listings',ReviewRouter);
+app.use('/',UserRouter);
 
-//show route
-app.get("/listings/:id", async (req, res) => {
-    console.log("show a particular listing")
-    let { id } = req.params;
-    const Listing = await listing.findById(id);
-    res.render("./listings/show.ejs", { Listing });
-})
+app.use((req, res) => {
+    res.status(404).render("errors/404", { layout: false, title: "Page Not Found" });
+});
 
-//Edit route
-app.get("/listings/:id/edit", async (req, res) => {
-    let { id } = req.params;
-    console.log("edit api")
-    const Listing = await listing.findById(id);
-    res.render("./listings/edit.ejs", { Listing });
-})
 
-app.put("/listings/:id", async (req,res) => {
-     let { id } = req.params;
-     await listing.findByIdAndUpdate(id, {...req.body})
-     res.redirect(`/listings/${id}`);
-})
-
-//create route
-app.post("/listings", async (req, res) => {
-    // console.log(req.body);
-    const newListing = new listing(req.body);
-    newListing.save();
-    res.redirect("/listings");
-})
-
-//Delete route
-app.delete("/listings/:id", async (req,res) => {
-    let {id} = req.params;
-    let deleteListing = await listing.findByIdAndDelete(id);
-    console.log(deleteListing);
-    res.redirect("/listings");
-})
-
-// //Edit route
-// app.get("listings/:id/edit", async (req, res) => {
-//     let { id } = req.params;
-//     const Listing = await listing.findById(id);
-//     res.render("./listings/edit.ejs", { Listing });
-// })
-
-//For testing
-app.get("/testListing", async (req, res) => {
-    let sampleListing = new listing({
-        title: "my new home",
-        description: "Near the hill",
-        price: 1400,
-        location: "Risikesh",
-        country: "India"
-    });
-
-    await sampleListing.save();
-    console.log("Data is saved successfully");
-    res.send("success");
-})
 
 connectToDatabase().then(() => {
     console.log('Connected to MongoDB');
@@ -111,6 +110,6 @@ connectToDatabase().then(() => {
 
 // Connect to MongoDB
 async function connectToDatabase() {
-    await mongoose.connect('mongodb://localhost:27017/StayTogether');
+    await mongoose.connect(dburl);
 }
 
